@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Astrodex — Llave Astral</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* Neue Power Font */
+      @font-face {
+        font-family: "Neue Power Medium";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Neue Power Medium"),
+          url("NeuePower-Medium.woff") format("woff");
+      }
+
+      :root {
+        --bg: #1c1c1c;
+        --card: #2a2a2a;
+        --card-light: #333333;
+        --muted: #a0a0a0;
+        --text: #ffffff;
+        --gold: #d4af37;
+        --gold-dark: #b8941f;
+        --gold-light: #f4e6a1;
+        --input-bg: #242424;
+        --border: #404040;
+        --shadow: rgba(0, 0, 0, 0.6);
+        --error: #ff6b6b;
+        --success: #51cf66;
+        --warning: #ffa726;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        background-image: radial-gradient(
+            circle at 25% 25%,
+            rgba(212, 175, 55, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 75% 75%,
+            rgba(212, 175, 55, 0.05) 0%,
+            transparent 50%
+          );
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .brand {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--bg);
+        font-weight: bold;
+      }
+
+      .brand-name {
+        font-family: "Neue Power Medium", sans-serif;
+        font-size: 40px;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 16px;
+        margin: 8px 0 0;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: 0 20px 40px var(--shadow);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--gold),
+          var(--gold-light),
+          var(--gold)
+        );
+      }
+
+      .form-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin: 0 0 8px;
+        color: var(--text);
+      }
+
+      .form-subtitle {
+        color: var(--muted);
+        margin: 0 0 32px;
+        font-size: 14px;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-row {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: var(--text);
+        font-size: 14px;
+      }
+
+      .label-pill {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--bg);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="date"],
+      input[type="time"] {
+        width: 100%;
+        background: var(--input-bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 16px;
+        outline: none;
+        transition: all 0.2s ease;
+      }
+
+      input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+      }
+
+      input::placeholder {
+        color: var(--muted);
+      }
+
+      .help-text {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+
+      .suggestions {
+        position: relative;
+        margin-top: 8px;
+      }
+
+      .suggestions ul {
+        position: absolute;
+        z-index: 100;
+        list-style: none;
+        margin: 0;
+        padding: 8px;
+        background: var(--card-light);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        max-height: 220px;
+        overflow-y: auto;
+        width: 100%;
+        box-shadow: 0 8px 24px var(--shadow);
+      }
+
+      .suggestions li {
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: background 0.1s ease;
+      }
+
+      .suggestions li:hover {
+        background: var(--input-bg);
+        color: var(--gold);
+      }
+
+      .captcha-container {
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        transition: all 0.2s ease;
+      }
+
+      .captcha-container:hover {
+        border-color: var(--gold);
+      }
+
+      .captcha-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        margin: 0;
+        font-weight: normal;
+      }
+
+      .captcha-checkbox {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--gold);
+        cursor: pointer;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .captcha-text {
+        flex: 1;
+        font-size: 14px;
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      .captcha-icon {
+        font-size: 24px;
+        opacity: 0.7;
+        flex-shrink: 0;
+      }
+
+      .captcha-container:has(.captcha-checkbox:checked) {
+        border-color: var(--success);
+        background: rgba(81, 207, 102, 0.05);
+      }
+
+      .captcha-container:has(.captcha-checkbox:checked) .captcha-icon {
+        opacity: 1;
+        transform: scale(1.1);
+        transition: all 0.2s ease;
+      }
+
+      .status {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+      }
+
+      .status.ok {
+        background: rgba(81, 207, 102, 0.1);
+        border: 1px solid var(--success);
+        color: var(--success);
+        display: block;
+      }
+
+      .status.warn {
+        background: rgba(255, 167, 38, 0.1);
+        border: 1px solid var(--warning);
+        color: var(--warning);
+        display: block;
+      }
+
+      .status.err {
+        background: rgba(255, 107, 107, 0.1);
+        border: 1px solid var(--error);
+        color: var(--error);
+        display: block;
+      }
+
+      .submit-section {
+        margin-top: 32px;
+        text-align: center;
+      }
+
+      .submit-btn {
+        background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+        color: var(--bg);
+        border: none;
+        border-radius: 12px;
+        padding: 16px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        min-width: 140px;
+      }
+
+      .submit-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+      }
+
+      .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .security-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .security-icon {
+        color: var(--gold);
+      }
+
+      @media (max-width: 640px) {
+        .container {
+          padding: 20px 16px;
+        }
+
+        .card {
+          padding: 24px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .brand-name {
+          font-size: 28px;
+        }
+      }
+
+      /* Loading animation */
+      .loading {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--bg);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="brand">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="astrodex-logo-2025.svg" alt="Astrodex Logo" />
+          </div>
+          <h1 class="brand-name">astrodex</h1>
+        </div>
+        <p class="subtitle">
+          Tu carta natal exacta, lista para hablar con la IA
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 class="form-title">Datos de nacimiento</h2>
+        <p class="form-subtitle">
+          Completa tu información para generar tu llave astral personalizada
+        </p>
+
+        <form id="astroForm" autocomplete="off">
+          <div class="form-group">
+            <label for="full_name">Nombre completo</label>
+            <input
+              id="full_name"
+              name="full_name"
+              type="text"
+              placeholder="Tu nombre y apellidos"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tucorreo@ejemplo.com"
+              required
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dob"> Fecha de nacimiento </label>
+              <input id="dob" name="dob" type="date" required lang="es" />
+              <div class="help-text">
+                Formato: día/mes/año (ejemplo: 15/03/1990)
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tob">Hora de nacimiento (opcional)</label>
+              <input
+                id="tob"
+                name="tob"
+                type="time"
+                step="60"
+                placeholder="HH:MM"
+              />
+              <div class="help-text">
+                Si no la conoces, usaremos mediodía como referencia
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="place">Lugar de nacimiento</label>
+            <input
+              id="place"
+              name="place"
+              type="text"
+              placeholder="Ciudad, provincia/estado, país"
+              required
+            />
+            <div class="help-text">
+              Empieza a escribir y selecciona una sugerencia de la lista
+            </div>
+            <div class="suggestions" id="placeSuggest"></div>
+          </div>
+
+          <!-- Hidden fields -->
+          <input type="hidden" id="city" name="city" />
+          <input type="hidden" id="state" name="state" />
+          <input type="hidden" id="country" name="country" />
+          <input type="hidden" id="lat" name="lat" />
+          <input type="hidden" id="lon" name="lon" />
+          <input type="hidden" id="tzid" name="tzid" />
+          <input type="hidden" id="tz_offset" name="tz_offset" />
+          <input type="hidden" id="tz_gmt" name="tz_gmt" />
+
+          <div class="form-group">
+            <div class="captcha-container">
+              <label class="captcha-label">
+                <input
+                  type="checkbox"
+                  id="captcha"
+                  name="captcha"
+                  required
+                  class="captcha-checkbox"
+                />
+                <span class="captcha-text">No soy un robot</span>
+                <div class="captcha-icon">🤖</div>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="captcha-container">
+              <label class="captcha-label">
+                <input
+                  type="checkbox"
+                  id="privacy"
+                  name="privacy"
+                  required
+                  class="captcha-checkbox"
+                />
+                <span class="captcha-text"
+                  >Autorizo el uso de mis datos de nacimiento exclusivamente
+                  para la elaboración de mi Llave Astral, garantizando su
+                  confidencialidad y sin ser compartidos con terceros</span
+                >
+              </label>
+            </div>
+          </div>
+
+          <div class="submit-section">
+            <button id="submitBtn" type="submit" class="submit-btn">
+              <span id="btnText">Generar llave astral</span>
+            </button>
+            <div class="security-note">
+              <span class="security-icon">🔒</span>
+              Tus datos se envían de forma segura y encriptada
+            </div>
+            <div class="security-note">
+              <span class="security-icon">🗝️</span>
+              Tu llave será enviada a tu correo. Si no la ves, revisa Spam.
+            </div>
+          </div>
+
+          <div id="status" class="status"></div>
+        </form>
+      </div>
+      <div class="form-group">
+        <p class="form-subtitle" style="text-align: center; margin-top: 40px">
+          © Astrodex 2025. Todos los derechos reservados.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // =======================
+      // Config (logic in English)
+      // =======================
+      const LOCATIONIQ_KEY = "pk.a9cb764a1661f4a780726d166c6db0c9";
+      const MAKE_WEBHOOK_URL =
+        "https://hook.us1.make.com/mfexsajcdybq1bg7azjitvoffecm9j1p";
+
+      // Elements
+      const formEl = document.getElementById("astroForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const statusEl = document.getElementById("status");
+      const placeEl = document.getElementById("place");
+      const suggBox = document.getElementById("placeSuggest");
+      const cityEl = document.getElementById("city");
+      const stateEl = document.getElementById("state");
+      const countryEl = document.getElementById("country");
+      const latEl = document.getElementById("lat");
+      const lonEl = document.getElementById("lon");
+
+      // =======================
+      // UI helpers
+      // =======================
+      function setStatus(msg, kind) {
+        statusEl.textContent = msg || "";
+        statusEl.className = `status${kind ? " " + kind : ""}`;
+      }
+
+      function setLoading(loading) {
+        if (loading) {
+          btnText.innerHTML = '<span class="loading"></span>Procesando...';
+          submitBtn.disabled = true;
+        } else {
+          btnText.textContent = "Generar llave astral";
+          submitBtn.disabled = false;
+        }
+      }
+
+      function debounce(fn, ms = 250) {
+        let t;
+        return (...args) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn(...args), ms);
+        };
+      }
+
+      // =======================
+      // LocationIQ: Autocomplete (forward geocoding)
+      // =======================
+      async function searchPlaces(q) {
+        if (!q || q.trim().length < 2) return [];
+        const url = new URL("https://api.locationiq.com/v1/autocomplete");
+        url.search = new URLSearchParams({
+          key: LOCATIONIQ_KEY,
+          q: q.trim(),
+          limit: "8",
+          normalizecity: "1",
+          tag: "place,city,town,village,state,country",
+          format: "json",
+        }).toString();
+        const res = await fetch(url);
+        if (!res.ok) return [];
+        return res.json();
+      }
+
+      function renderSuggestions(items) {
+        suggBox.innerHTML = "";
+        if (!items || !items.length) return;
+        const ul = document.createElement("ul");
+        for (const it of items) {
+          const li = document.createElement("li");
+          const label = it.display_place
+            ? `${it.display_place}, ${it.display_address || it.display_name}`
+            : it.display_name || it.address?.name || "Lugar";
+          li.textContent = label;
+          li.addEventListener("click", () => {
+            placeEl.value = label;
+            const a = it.address || {};
+            cityEl.value =
+              a.city ||
+              a.town ||
+              a.village ||
+              a.hamlet ||
+              a.suburb ||
+              a.county ||
+              "";
+            stateEl.value =
+              a.state || a.region || a.province || a.state_district || "";
+            countryEl.value = a.country || "";
+            latEl.value = it.lat ? Number(it.lat).toFixed(6) : "";
+            lonEl.value = it.lon ? Number(it.lon).toFixed(6) : "";
+            suggBox.innerHTML = "";
+          });
+          ul.appendChild(li);
+        }
+        suggBox.appendChild(ul);
+      }
+
+      placeEl.addEventListener(
+        "input",
+        debounce(async (e) => {
+          const q = e.target.value;
+          const results = await searchPlaces(q);
+          renderSuggestions(results);
+        }, 300)
+      );
+
+      // Close suggestions when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!suggBox.contains(e.target) && e.target !== placeEl) {
+          suggBox.innerHTML = "";
+        }
+      });
+
+      // =======================
+      // Ensure we have coordinates (fallback single-forward geocode)
+      // =======================
+      async function ensureCoordinates() {
+        if (latEl.value && lonEl.value) return true;
+        const q = placeEl.value.trim();
+        if (!q) return false;
+        const url = new URL("https://us1.locationiq.com/v1/search");
+        url.search = new URLSearchParams({
+          key: LOCATIONIQ_KEY,
+          q,
+          limit: "1",
+          format: "json",
+          addressdetails: "1",
+          normalizecity: "1",
+        }).toString();
+        const res = await fetch(url);
+        if (!res.ok) return false;
+        const arr = await res.json();
+        if (!Array.isArray(arr) || !arr.length) return false;
+        const it = arr[0];
+        const a = it.address || {};
+        cityEl.value =
+          a.city ||
+          a.town ||
+          a.village ||
+          a.hamlet ||
+          a.suburb ||
+          a.county ||
+          cityEl.value ||
+          "";
+        stateEl.value =
+          a.state ||
+          a.region ||
+          a.province ||
+          a.state_district ||
+          stateEl.value ||
+          "";
+        countryEl.value = a.country || countryEl.value || "";
+        latEl.value = it.lat ? Number(it.lat).toFixed(6) : latEl.value || "";
+        lonEl.value = it.lon ? Number(it.lon).toFixed(6) : lonEl.value || "";
+        return Boolean(latEl.value && lonEl.value);
+      }
+
+      // =======================
+      // Robust offset parsing (seconds or "+/-HH:MM")
+      // =======================
+      function parseOffsetToHours(raw) {
+        if (raw == null) return null;
+        if (typeof raw === "number" && Number.isFinite(raw)) {
+          return Math.round((raw / 3600) * 4) / 4;
+        }
+        if (typeof raw === "string" && /^-?\d+$/.test(raw.trim())) {
+          const sec = Number(raw.trim());
+          return Math.round((sec / 3600) * 4) / 4;
+        }
+        if (typeof raw === "string") {
+          const m = raw.trim().match(/^([+-])?(\d{1,2}):(\d{2})$/);
+          if (m) {
+            const sign = m[1] === "-" ? -1 : 1;
+            const hh = Number(m[2]);
+            const mm = Number(m[3]);
+            const hrs = sign * (hh + mm / 60);
+            return Math.round(hrs * 4) / 4;
+          }
+        }
+        return null;
+      }
+
+      function extractTzid(tzObj) {
+        if (!tzObj) return "";
+        if (typeof tzObj.timezone === "string") return tzObj.timezone;
+        if (tzObj.timezone && typeof tzObj.timezone.name === "string")
+          return tzObj.timezone.name;
+        if (typeof tzObj.tzid === "string") return tzObj.tzid;
+        if (typeof tzObj.zone_name === "string") return tzObj.zone_name;
+        if (typeof tzObj.name === "string") return tzObj.name;
+        return "";
+      }
+
+      // =======================
+      // Timezone for historical date/time (LocationIQ)
+      // =======================
+      async function fetchTimezoneForDate(lat, lon, dobISO, tob = null) {
+        if (!lat || !lon || !dobISO) return null;
+
+        const timeStr = tob && /^\d{2}:\d{2}$/.test(tob) ? tob : "12:00";
+        const localDate = new Date(`${dobISO}T${timeStr}:00`);
+        const unixTimestamp = Math.floor(localDate.getTime() / 1000);
+
+        const url = new URL("https://us1.locationiq.com/v1/timezone");
+        url.search = new URLSearchParams({
+          key: LOCATIONIQ_KEY,
+          lat: lat,
+          lon: lon,
+          timestamp: String(unixTimestamp),
+          format: "json",
+        }).toString();
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          console.error("❌ Error al llamar LocationIQ:", await res.text());
+          return null;
+        }
+
+        const tz = await res.json();
+        const offsetSeconds =
+          tz.timezone?.offset_sec ??
+          tz.timezone?.gmt_offset ??
+          tz.timezone?.utc_offset_seconds ??
+          tz.timezone?.raw_offset ??
+          0;
+        const hours = parseOffsetToHours(offsetSeconds);
+        const tzid = tz.timezone?.name ?? "Unknown";
+        const gmtStr = `GMT ${hours >= 0 ? "+" : ""}${hours}`;
+
+        document.getElementById("tzid").value = tzid;
+        document.getElementById("tz_offset").value = String(hours);
+        document.getElementById("tz_gmt").value = gmtStr;
+
+        return { tzid, offsetHours: hours, gmt: gmtStr, raw: tz };
+      }
+
+      // =======================
+      // Validation & payload
+      // =======================
+      function validateForm() {
+        const name = document.getElementById("full_name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const dob = document.getElementById("dob").value;
+        const place = document.getElementById("place").value.trim();
+        const captcha = document.getElementById("captcha").checked;
+        const privacy = document.getElementById("privacy").checked;
+
+        if (!name) {
+          setStatus("Por favor, ingresa tu nombre completo.", "warn");
+          return false;
+        }
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+          setStatus("Por favor, ingresa un correo electrónico válido.", "warn");
+          return false;
+        }
+        if (!dob) {
+          setStatus("Por favor, selecciona tu fecha de nacimiento.", "warn");
+          return false;
+        }
+        if (!place) {
+          setStatus("Por favor, ingresa tu lugar de nacimiento.", "warn");
+          return false;
+        }
+        if (!captcha) {
+          setStatus("Por favor, confirma que no eres un robot.", "warn");
+          return false;
+        }
+        if (!privacy) {
+          setStatus(
+            "Por favor, autoriza el uso de tus datos para generar tu Llave Astral.",
+            "warn"
+          );
+          return false;
+        }
+        return true;
+      }
+
+      function collectPayload() {
+        const dob = document.getElementById("dob").value;
+        const tob = document.getElementById("tob").value || "12:00";
+        const [year, month, day] = dob.split("-").map(Number);
+        const [hour, minute] = tob.split(":").map(Number);
+
+        return {
+          full_name: document.getElementById("full_name").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          birthplace_input: document.getElementById("place").value.trim(),
+          city: document.getElementById("city").value || null,
+          state: document.getElementById("state").value || null,
+          country: document.getElementById("country").value || null,
+          latitude: document.getElementById("lat").value
+            ? Number(document.getElementById("lat").value)
+            : null,
+          longitude: document.getElementById("lon").value
+            ? Number(document.getElementById("lon").value)
+            : null,
+          timezone: document.getElementById("tz_offset").value
+            ? Number(document.getElementById("tz_offset").value)
+            : null,
+          timezone_label: document.getElementById("tz_gmt").value || null,
+          timezone_id: document.getElementById("tzid").value || null,
+          year,
+          month,
+          day,
+          hour,
+          minute,
+          include_extended: true,
+          submitted_at: new Date().toISOString(),
+        };
+      }
+
+      // =======================
+      // POST to Make webhook
+      // =======================
+      async function postToWebhook(payload) {
+        try {
+          const res = await fetch(MAKE_WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          return res.ok;
+        } catch (e) {
+          console.error("Webhook error:", e);
+          return false;
+        }
+      }
+
+      // =======================
+      // Submit flow
+      // =======================
+      formEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        setStatus("");
+        if (!validateForm()) return;
+
+        setLoading(true);
+
+        setStatus("Validando ubicación...", "");
+        const okCoords = await ensureCoordinates();
+        if (!okCoords) {
+          setStatus(
+            "Por favor selecciona una ubicación de las sugerencias para obtener coordenadas precisas.",
+            "warn"
+          );
+          setLoading(false);
+          return;
+        }
+
+        setStatus("Calculando zona horaria histórica...", "");
+        const lat = Number(latEl.value);
+        const lon = Number(lonEl.value);
+        const dobISO = document.getElementById("dob").value;
+        const tob = document.getElementById("tob").value || null;
+
+        try {
+          const tz = await fetchTimezoneForDate(lat, lon, dobISO, tob);
+          if (tz) {
+            setStatus(`Zona horaria detectada: ${tz.tzid || tz.gmt}`, "ok");
+          } else {
+            setStatus("Continuando sin zona horaria específica...", "warn");
+          }
+        } catch (err) {
+          console.error("Timezone error:", err);
+          setStatus("Continuando sin zona horaria específica...", "warn");
+        }
+
+        const payload = collectPayload();
+        setStatus("Enviando datos...", "");
+
+        const ok = await postToWebhook(payload);
+        setStatus(
+          ok
+            ? "¡Perfecto! Tu llave astral se está generando. Recibirás un correo pronto."
+            : "Hubo un error al enviar los datos. Por favor, intenta nuevamente.",
+          ok ? "ok" : "err"
+        );
+        setLoading(false);
+      });
+    </script>
+  </body>
+</html>
