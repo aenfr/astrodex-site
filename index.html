@@ -487,21 +487,7 @@
           <input type="hidden" id="tz_offset" name="tz_offset" />
           <input type="hidden" id="tz_gmt" name="tz_gmt" />
 
-          <div class="form-group">
-            <div class="captcha-container">
-              <label class="captcha-label">
-                <input
-                  type="checkbox"
-                  id="captcha"
-                  name="captcha"
-                  required
-                  class="captcha-checkbox"
-                />
-                <span class="captcha-text">No soy un robot</span>
-                <div class="captcha-icon">🤖</div>
-              </label>
-            </div>
-          </div>
+
 
           <div class="form-group">
             <div class="captcha-container">
@@ -522,6 +508,8 @@
             </div>
           </div>
 
+          <div id="status" class="status"></div>
+
           <div class="submit-section">
             <button id="submitBtn" type="submit" class="submit-btn">
               <span id="btnText">Generar llave astral</span>
@@ -535,8 +523,6 @@
               Tu llave será enviada a tu correo. Si no la ves, revisa Spam.
             </div>
           </div>
-
-          <div id="status" class="status"></div>
         </form>
       </div>
       <div class="form-group">
@@ -792,7 +778,6 @@
         const email = document.getElementById("email").value.trim();
         const dob = document.getElementById("dob").value;
         const place = document.getElementById("place").value.trim();
-        const captcha = document.getElementById("captcha").checked;
         const privacy = document.getElementById("privacy").checked;
 
         if (!name) {
@@ -809,10 +794,6 @@
         }
         if (!place) {
           setStatus("Por favor, ingresa tu lugar de nacimiento.", "warn");
-          return false;
-        }
-        if (!captcha) {
-          setStatus("Por favor, confirma que no eres un robot.", "warn");
           return false;
         }
         if (!privacy) {
