@@ -5,7 +5,6 @@
     <title>Astrodex — Llave Astral</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
       /* Neue Power Font */
       @font-face {
@@ -395,21 +394,6 @@
           transform: rotate(360deg);
         }
       }
-
-      /* reCAPTCHA styles */
-      .g-recaptcha {
-        display: flex;
-        justify-content: center;
-        margin: 16px 0;
-      }
-
-      @media (max-width: 640px) {
-        .g-recaptcha {
-          transform: scale(0.77);
-          transform-origin: 0 0;
-          margin-left: -10px;
-        }
-      }
     </style>
   </head>
   <body>
@@ -525,10 +509,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="TU_NUEVA_RECAPTCHA_SITE_KEY_AQUI"></div>
-          </div>
-
           <div id="status" class="status"></div>
 
           <div class="submit-section">
@@ -557,9 +537,9 @@
       // =======================
       // Config (logic in English)
       // =======================
-      const LOCATIONIQ_KEY = "TU_NUEVA_LOCATIONIQ_KEY_AQUI";
+      const LOCATIONIQ_KEY = "pk.453b1f84eb7dbab3530626138c5fedfa";
       const MAKE_WEBHOOK_URL =
-        "https://hook.us1.make.com/mfexsajcdybq1bg7azjitvoffecm9j1p";
+        "https://hook.us1.make.com/afhceh86lstkf1tewt6gwby5kyw2twik";
 
       // Elements
       const formEl = document.getElementById("astroForm");
@@ -800,7 +780,6 @@
         const dob = document.getElementById("dob").value;
         const place = document.getElementById("place").value.trim();
         const privacy = document.getElementById("privacy").checked;
-        const recaptcha = grecaptcha.getResponse();
 
         if (!name) {
           setStatus("Por favor, ingresa tu nombre completo.", "warn");
@@ -823,10 +802,6 @@
             "Por favor, autoriza el uso de tus datos para generar tu Llave Astral.",
             "warn"
           );
-          return false;
-        }
-        if (!recaptcha) {
-          setStatus("Por favor, completa la verificación reCAPTCHA.", "warn");
           return false;
         }
         return true;
@@ -863,7 +838,6 @@
           minute,
           include_extended: true,
           submitted_at: new Date().toISOString(),
-          recaptcha_token: grecaptcha.getResponse(),
         };
       }
 
@@ -933,11 +907,6 @@
             : "Hubo un error al enviar los datos. Por favor, intenta nuevamente.",
           ok ? "ok" : "err"
         );
-        
-        // Reset reCAPTCHA after submission
-        if (typeof grecaptcha !== 'undefined') {
-          grecaptcha.reset();
-        }
         
         setLoading(false);
       });
