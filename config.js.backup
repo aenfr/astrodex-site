@@ -1,0 +1,7 @@
+// Archivo de configuración real
+const CONFIG = {
+  LOCATIONIQ_KEY: "pk.453b1f84eb7dbab3530626138c5fedfa",
+  MAKE_WEBHOOK_URL: "https://hook.us1.make.com/afhceh86lstkf1tewt6gwby5kyw2twik"
+};
+
+window.CONFIG = CONFIG;

@@ -1,0 +1,11 @@
+# Astrodex Site - GitHub Actions Deployment
+
+## Development files
+*.log
+node_modules/
+.DS_Store
+.env
+
+## Temporary build files
+dist/
+build/
