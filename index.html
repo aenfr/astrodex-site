@@ -860,10 +860,24 @@
       // =======================
       // Submit flow
       // =======================
+      let isSubmitting = false; // Prevenir doble envío
+
       formEl.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
+        // Prevenir múltiples envíos
+        if (isSubmitting) {
+          console.log("⚠️ Envío ya en progreso, ignorando...");
+          return;
+        }
+        
+        isSubmitting = true;
         setStatus("");
-        if (!validateForm()) return;
+        
+        if (!validateForm()) {
+          isSubmitting = false;
+          return;
+        }
 
         setLoading(true);
 
@@ -896,18 +910,24 @@
           setStatus("Continuando sin zona horaria específica...", "warn");
         }
 
-        const payload = collectPayload();
         setStatus("Enviando datos...", "");
 
-        const ok = await postToWebhook(payload);
-        setStatus(
-          ok
-            ? "¡Perfecto! Tu llave astral se está generando. Recibirás un correo pronto."
-            : "Hubo un error al enviar los datos. Por favor, intenta nuevamente.",
-          ok ? "ok" : "err"
-        );
+        try {
+          const payload = collectPayload();
+          const ok = await postToWebhook(payload);
+          setStatus(
+            ok
+              ? "¡Perfecto! Tu llave astral se está generando. Recibirás un correo pronto."
+              : "Hubo un error al enviar los datos. Por favor, intenta nuevamente.",
+            ok ? "ok" : "err"
+          );
+        } catch (error) {
+          console.error("Error durante el envío:", error);
+          setStatus("Error inesperado. Por favor, intenta nuevamente.", "err");
+        }
         
         setLoading(false);
+        isSubmitting = false; // Permitir nuevos envíos
       });
     </script>
   </body>
