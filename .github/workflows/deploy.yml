@@ -1,42 +1,32 @@
-name: Deploy to GitHub Pages with Secrets
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
-# Allow this job to clone the repo and create a page deployment
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Replace API keys with secrets
+      - name: Replace API keys
         run: |
-          # Replace placeholders with actual secrets
-          sed -i 's|YOUR_LOCATIONIQ_KEY_HERE|${{ secrets.LOCATIONIQ_KEY }}|g' index.html
-          sed -i 's|YOUR_WEBHOOK_URL_HERE|${{ secrets.MAKE_WEBHOOK_URL }}|g' index.html
-          
-          # Show that replacement worked (without exposing the keys)
-          echo "✅ API keys replaced successfully"
-          grep -q "secrets.LOCATIONIQ_KEY" index.html && echo "❌ LocationIQ replacement failed" || echo "✅ LocationIQ key replaced"
-          grep -q "secrets.MAKE_WEBHOOK_URL" index.html && echo "❌ Webhook replacement failed" || echo "✅ Webhook URL replaced"
+          sed -i 's/YOUR_LOCATIONIQ_KEY_HERE/${{ secrets.LOCATIONIQ_KEY }}/g' index.html
+          sed -i 's/YOUR_WEBHOOK_URL_HERE/${{ secrets.MAKE_WEBHOOK_URL }}/g' index.html
+          echo "API keys replaced successfully"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
