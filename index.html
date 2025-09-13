@@ -845,14 +845,24 @@
       // =======================
       async function postToWebhook(payload) {
         try {
+          console.log("🌐 Haciendo fetch al webhook:", MAKE_WEBHOOK_URL);
+          console.log("📦 Datos a enviar:", payload);
+          
           const res = await fetch(MAKE_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
+          
+          console.log("📊 Respuesta del servidor:", {
+            status: res.status,
+            statusText: res.statusText,
+            ok: res.ok
+          });
+          
           return res.ok;
         } catch (e) {
-          console.error("Webhook error:", e);
+          console.error("🚨 Error en postToWebhook:", e);
           return false;
         }
       }
@@ -861,9 +871,14 @@
       // Submit flow
       // =======================
       let isSubmitting = false; // Prevenir doble envío
+      let submitCount = 0; // Contador para debugging
 
       formEl.addEventListener("submit", async (e) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevenir propagación del evento
+        
+        submitCount++;
+        console.log(`🔥 Submit event #${submitCount} triggered`);
         
         // Prevenir múltiples envíos
         if (isSubmitting) {
@@ -872,9 +887,11 @@
         }
         
         isSubmitting = true;
+        console.log("✅ Iniciando envío del formulario");
         setStatus("");
         
         if (!validateForm()) {
+          console.log("❌ Validación fallida");
           isSubmitting = false;
           return;
         }
@@ -914,7 +931,21 @@
 
         try {
           const payload = collectPayload();
+          console.log("📦 Payload generado:", JSON.stringify(payload, null, 2));
+          
+          // Verificar que el payload no esté vacío
+          if (!payload.full_name || !payload.email) {
+            console.error("❌ Payload vacío o incompleto!", payload);
+            setStatus("Error: Datos incompletos. Por favor, revisa el formulario.", "err");
+            isSubmitting = false;
+            setLoading(false);
+            return;
+          }
+          
+          console.log("🚀 Enviando al webhook...");
           const ok = await postToWebhook(payload);
+          console.log("📨 Respuesta del webhook:", ok);
+          
           setStatus(
             ok
               ? "¡Perfecto! Tu llave astral se está generando. Recibirás un correo pronto."
@@ -922,12 +953,13 @@
             ok ? "ok" : "err"
           );
         } catch (error) {
-          console.error("Error durante el envío:", error);
+          console.error("🚨 Error durante el envío:", error);
           setStatus("Error inesperado. Por favor, intenta nuevamente.", "err");
         }
         
         setLoading(false);
         isSubmitting = false; // Permitir nuevos envíos
+        console.log("🏁 Proceso de envío completado");
       });
     </script>
   </body>
