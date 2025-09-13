@@ -24,8 +24,8 @@ jobs:
 
       - name: Replace API keys
         run: |
-          sed -i 's/YOUR_LOCATIONIQ_KEY_HERE/${{ secrets.LOCATIONIQ_KEY }}/g' index.html
-          sed -i 's/YOUR_WEBHOOK_URL_HERE/${{ secrets.MAKE_WEBHOOK_URL }}/g' index.html
+          sed -i 's|YOUR_LOCATIONIQ_KEY_HERE|${{ secrets.LOCATIONIQ_KEY }}|g' index.html
+          sed -i 's|YOUR_WEBHOOK_URL_HERE|${{ secrets.MAKE_WEBHOOK_URL }}|g' index.html
           echo "API keys replaced successfully"
 
       - name: Setup Pages
