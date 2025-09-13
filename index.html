@@ -4,10 +4,16 @@
     <meta charset="utf-8" />
     <title>Astrodex — Llave Astral</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       /* Neue Power Font */
       @font-face {
@@ -96,7 +102,8 @@
       }
 
       .brand-name {
-        font-family: "Neue Power Medium", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: "Neue Power Medium", "Inter", -apple-system,
+          BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         font-size: 40px;
         font-weight: 700;
         color: white;
@@ -448,7 +455,9 @@
           </div>
 
           <div class="form-group">
-            <label for="email">Correo electrónico</label>
+            <label for="email"
+              >Correo electrónico que usaste para la compra</label
+            >
             <input
               id="email"
               name="email"
@@ -506,8 +515,6 @@
           <input type="hidden" id="tzid" name="tzid" />
           <input type="hidden" id="tz_offset" name="tz_offset" />
           <input type="hidden" id="tz_gmt" name="tz_gmt" />
-
-
 
           <div class="form-group">
             <div class="captcha-container">
@@ -866,19 +873,19 @@
         try {
           console.log("🌐 Haciendo fetch al webhook:", MAKE_WEBHOOK_URL);
           console.log("📦 Datos a enviar:", payload);
-          
+
           const res = await fetch(MAKE_WEBHOOK_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
-          
+
           console.log("📊 Respuesta del servidor:", {
             status: res.status,
             statusText: res.statusText,
-            ok: res.ok
+            ok: res.ok,
           });
-          
+
           return res.ok;
         } catch (e) {
           console.error("🚨 Error en postToWebhook:", e);
@@ -895,20 +902,20 @@
       formEl.addEventListener("submit", async (e) => {
         e.preventDefault();
         e.stopPropagation(); // Prevenir propagación del evento
-        
+
         submitCount++;
         console.log(`🔥 Submit event #${submitCount} triggered`);
-        
+
         // Prevenir múltiples envíos
         if (isSubmitting) {
           console.log("⚠️ Envío ya en progreso, ignorando...");
           return;
         }
-        
+
         isSubmitting = true;
         console.log("✅ Iniciando envío del formulario");
         setStatus("");
-        
+
         if (!validateForm()) {
           console.log("❌ Validación fallida");
           isSubmitting = false;
@@ -951,20 +958,23 @@
         try {
           const payload = collectPayload();
           console.log("📦 Payload generado:", JSON.stringify(payload, null, 2));
-          
+
           // Verificar que el payload no esté vacío
           if (!payload.full_name || !payload.email) {
             console.error("❌ Payload vacío o incompleto!", payload);
-            setStatus("Error: Datos incompletos. Por favor, revisa el formulario.", "err");
+            setStatus(
+              "Error: Datos incompletos. Por favor, revisa el formulario.",
+              "err"
+            );
             isSubmitting = false;
             setLoading(false);
             return;
           }
-          
+
           console.log("🚀 Enviando al webhook...");
           const ok = await postToWebhook(payload);
           console.log("📨 Respuesta del webhook:", ok);
-          
+
           setStatus(
             ok
               ? "¡Perfecto! Tu llave astral se está generando. Recibirás un correo pronto."
@@ -975,7 +985,7 @@
           console.error("🚨 Error durante el envío:", error);
           setStatus("Error inesperado. Por favor, intenta nuevamente.", "err");
         }
-        
+
         setLoading(false);
         isSubmitting = false; // Permitir nuevos envíos
         console.log("🏁 Proceso de envío completado");
