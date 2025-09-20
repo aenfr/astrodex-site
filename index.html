@@ -563,8 +563,9 @@
       // =======================
       // Config (logic in English)
       // =======================
-      const LOCATIONIQ_KEY = "YOUR_LOCATIONIQ_KEY_HERE";
-      const MAKE_WEBHOOK_URL = "YOUR_WEBHOOK_URL_HERE";
+      const LOCATIONIQ_KEY = "LOCATIONIQ_KEY";
+      const MAKE_WEBHOOK_URL = "MAKE_WEBHOOK_URL";
+      const MAKE_API_KEY = "MAKE_API_KEY";
 
       // Elements
       const formEl = document.getElementById("astroForm");
@@ -876,7 +877,10 @@
 
           const res = await fetch(MAKE_WEBHOOK_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "x-make-apikey": MAKE_API_KEY
+            },
             body: JSON.stringify(payload),
           });
 
